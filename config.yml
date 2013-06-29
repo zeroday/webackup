@@ -4,3 +4,19 @@ root_fdir: MISC
 ftp_host: ftp.microsoft.com
 ftp_user: anonymous
 ftp_pass: ''
+
+excluded_dirs:
+- beckyk
+- csformat
+- DAILYKB
+- FDC
+- FULLKB
+- Homenet
+- Jeffreyf
+- KB
+- KBSPV
+- Markesh
+- Peach
+- Store
+- STORE1
+- test
