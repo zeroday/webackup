@@ -1,13 +1,22 @@
 import ftputil
 import os.path
+import yaml
+
+config = yaml.load(file("config.yml"))
 
 # root directory for local host
-root_ldir = '/tmp/ftptest/'
-# root directory for ftp host
-root_fdir = 'MISC'
+root_ldir = config['root_ldir']
 
-#connect to the FTP server
-ftp = ftputil.FTPHost('ftp.microsoft.com','anonymous','')
+# root directory for ftp host
+root_fdir = config['root_fdir']
+
+# ftp server credentials
+ftp_host = config['ftp_host']
+ftp_user = config['ftp_user']
+ftp_pass = config['ftp_pass']
+
+# connect to the FTP server
+ftp = ftputil.FTPHost(ftp_host, ftp_user, ftp_pass)
 
 # gather the remote file structure
 recursive = ftp.walk(root_fdir,topdown=True,onerror=None)
