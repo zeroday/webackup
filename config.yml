@@ -1,0 +1,6 @@
+root_ldir: /tmp/ftptest/
+root_fdir: MISC
+
+ftp_host: ftp.microsoft.com
+ftp_user: anonymous
+ftp_pass: ''
