@@ -1,6 +1,7 @@
 import ftputil
 import os.path
 import yaml
+import re
 
 config = yaml.load(file("config.yml"))
 
@@ -24,11 +25,11 @@ ftp = ftputil.FTPHost(ftp_host, ftp_user, ftp_pass)
 # gather the remote file structure
 recursive = ftp.walk(root_fdir,topdown=True,onerror=None)
 
-def exclude_this_directory(current_dir):
+def exclude_this_directory(target):
     for relative_dir in excluded_dirs:
+        # it is assumed that all subdirectories are excluded
         excluded_dir = ftp.path.join(root_fdir, relative_dir)
-        target = current_dir
-        if (excluded_dir == target):
+        if (re.match(excluded_dir, target)):
             return True
     return False
 
@@ -45,7 +46,13 @@ def download_file(fpath, fname, lpath, dest_dir):
             target = os.path.join(dest_dir, fname)
             ftp.download_if_newer(fpath, target, 'b')
     except IOError, obj:
-        raise IOError("%s" % (obj.strerror))
+        print obj.strerror
+        # TODO exception handler for connection time out
+        # reconnect and retry the download
+        # all other exceptions are logged to file
+    except FTPOSError, obj:
+        print obj.strerror
+    
 
 for root,dirs,files in recursive:
     for fname in files:
