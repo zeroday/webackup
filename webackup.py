@@ -13,6 +13,8 @@ root_fdir = config['root_fdir']
 
 # directories to exclude
 excluded_dirs = config['excluded_dirs']
+excluded_files = config['excluded_files']
+excluded_filetypes = ['\.zip','\.tar','\.tar\.gz','\.gz','\.rar']
 
 # ftp server credentials
 ftp_host = config['ftp_host']
@@ -26,12 +28,44 @@ ftp = ftputil.FTPHost(ftp_host, ftp_user, ftp_pass)
 recursive = ftp.walk(root_fdir,topdown=True,onerror=None)
 
 def exclude_this_directory(target):
+    global excluded_dirs
+
+    if not excluded_dirs:
+        return False
+
     for relative_dir in excluded_dirs:
         # it is assumed that all subdirectories are excluded
         excluded_dir = ftp.path.join(root_fdir, relative_dir)
         if (re.match(excluded_dir, target)):
+            print("excluding %s" % target)
             return True
     return False
+
+def exclude_this_filetype(target):
+    # by default let's not download zip, tar.gz, rar
+    global excluded_filetypes
+
+    for filetype in excluded_filetypes:
+        pattern = ".*%s$" % filetype
+        if (re.match(pattern, target)):
+            print("excluding %s on pattern %s" % (target, pattern))
+            return True
+    return False
+
+def exclude_this_file(target):
+    # by default let's not download zip, tar.gz, rar
+    global excluded_files
+
+    if not excluded_files:
+        return False
+
+    for excluded_file in excluded_files:
+        excluded_file = "%s" % excluded_file
+        if (re.match(excluded_file, target)):
+            print("excluding %s" % target)
+            return True
+    return False
+
 
 def download_file(fpath, fname, lpath, dest_dir):
     # if the directory doesn't exist locally then create it
@@ -50,15 +84,21 @@ def download_file(fpath, fname, lpath, dest_dir):
         # TODO exception handler for connection time out
         # reconnect and retry the download
         # all other exceptions are logged to file
-    except FTPOSError, obj:
-        print obj.strerror
-    
+    except ftputil.ftp_error.FTPOSError, exc:
+        print str(exc)
+
 
 for root,dirs,files in recursive:
     for fname in files:
-        fpath = ftp.path.join(root, fname)
-        lpath = ftp.path.dirname(fpath)
-        dest_dir = os.path.join(root_ldir, lpath)
+        # exclude file if found in excluded_files
+        if exclude_this_filetype(fname):
+            continue
+        elif exclude_this_file(fname):
+            continue
+        else:
+            fpath = ftp.path.join(root, fname)
+            lpath = ftp.path.dirname(fpath)
+            dest_dir = os.path.join(root_ldir, lpath)
 
         # exclude the directory if it is found in excluded_dirs
         if exclude_this_directory(lpath):
