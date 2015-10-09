@@ -14,7 +14,7 @@ root_fdir = config['root_fdir']
 # directories to exclude
 excluded_dirs = config['excluded_dirs']
 excluded_files = config['excluded_files']
-excluded_filetypes = ['\.zip','\.tar','\.tar\.gz','\.gz','\.rar']
+excluded_filetypes = ['\.zip', '\.tar', '\.tar\.gz', '\.gz', '\.rar']
 
 # ftp server credentials
 ftp_host = config['ftp_host']
@@ -25,7 +25,7 @@ ftp_pass = config['ftp_pass']
 ftp = ftputil.FTPHost(ftp_host, ftp_user, ftp_pass)
 
 # gather the remote file structure
-recursive = ftp.walk(root_fdir,topdown=True,onerror=None)
+recursive = ftp.walk(root_fdir, topdown=True, onerror=None)
 
 def exclude_this_directory(target):
     global excluded_dirs
@@ -62,18 +62,18 @@ def exclude_this_file(target):
     for excluded_file in excluded_files:
         excluded_file = "%s" % excluded_file
         if (re.match(excluded_file, target)):
-            print("excluding %s" % target)
+            print(("(excluding %s" % target))
             return True
     return False
 
 
-def download_file(fpath, fname, lpath, dest_dir):
+def download_file(root_ldir, path, fname, lpath, dest_dir):
     # if the directory doesn't exist locally then create it
+    # TODO directory MUST be created in local root
     try:
         os.stat(dest_dir)
     except:
-        os.makedirs(dest_dir)
-
+        os.makedirs(os.path.join(root_ldir, dest_dir))
     # download the file into the target directory
     try:
         if ftp.path.isfile(fpath):
@@ -86,7 +86,8 @@ def download_file(fpath, fname, lpath, dest_dir):
         # all other exceptions are logged to file
     except ftputil.ftp_error.FTPOSError, exc:
         print str(exc)
-
+    except Error, e:
+        print "Bad thing happened: %s occured" % e
 
 for root,dirs,files in recursive:
     for fname in files:
@@ -104,6 +105,6 @@ for root,dirs,files in recursive:
         if exclude_this_directory(lpath):
             continue
         else:
-            download_file(fpath, fname, lpath, dest_dir)
+            download_file(root_ldir, fpath, fname, lpath, dest_dir)
 
 ftp.close
