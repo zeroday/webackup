@@ -67,13 +67,26 @@ def exclude_this_file(target):
     return False
 
 
-def download_file(root_ldir, path, fname, lpath, dest_dir):
+def download_file(root_ldir, fpath, fname, lpath, dest_dir):
     # if the directory doesn't exist locally then create it
-    # TODO directory MUST be created in local root
+    # TODO ignore softlinks
+    make_directory = False
+    if dest_dir.startswith('/'):
+        dest_dir = dest_dir[1:]
+
     try:
         os.stat(dest_dir)
     except:
-        os.makedirs(os.path.join(root_ldir, dest_dir))
+        make_directory = True
+
+    if make_directory:
+        try:
+            os.makedirs(os.path.join(root_ldir, lpath, dest_dir))
+        except:
+            return False
+        
+    print(root_ldir, lpath, dest_dir)
+    
     # download the file into the target directory
     try:
         if ftp.path.isfile(fpath):
@@ -84,13 +97,16 @@ def download_file(root_ldir, path, fname, lpath, dest_dir):
         # TODO exception handler for connection time out
         # reconnect and retry the download
         # all other exceptions are logged to file
-    except ftputil.ftp_error.FTPOSError, exc:
-        print str(exc)
-    except Error, e:
-        print "Bad thing happened: %s occured" % e
+    except ftputil.error.FTPOSError, exc:
+        print exc
+
 
 for root,dirs,files in recursive:
     for fname in files:
+        fpath = ftp.path.join(root, fname)
+        lpath = ftp.path.dirname(fpath)
+        dest_dir = os.path.join(root_ldir, lpath)
+
         # exclude file if found in excluded_files
         if exclude_this_filetype(fname):
             continue
@@ -105,6 +121,7 @@ for root,dirs,files in recursive:
         if exclude_this_directory(lpath):
             continue
         else:
+            #print(root_ldir, fpath, fname, lpath, dest_dir)
             download_file(root_ldir, fpath, fname, lpath, dest_dir)
 
 ftp.close
