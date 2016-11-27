@@ -3,7 +3,10 @@ root_fdir: MISC
 
 ftp_host: ftp.microsoft.com
 ftp_user: anonymous
-ftp_pass: ''
+ftp_pass: 'nobody@knows.com'
+
+excluded_files:
+- mysql.tar.gz
 
 excluded_dirs:
 - beckyk
