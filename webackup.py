@@ -21,7 +21,7 @@ print(excluded_dirs)
 excluded_files = config['excluded_files']
 print(excluded_files)
 
-excluded_filetypes = ['\.zip', '\.tar', '\.tar\.gz', '\.gz', '\.rar']
+excluded_filetypes = ['\.zip', '\.tar', '\.tar\.gz', '\.gz', '\.rar', '\.7z']
 print(excluded_filetypes)
 
 # ftp server credentials
