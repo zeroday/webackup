@@ -1,7 +1,7 @@
-root_ldir: /tmp/ftptest/
+root_ldir: /
 root_fdir: MISC
 
-ftp_host: ftp.microsoft.com
+ftp_host: ftp.adobe.com
 ftp_user: anonymous
 ftp_pass: 'nobody@knows.com'
 
@@ -11,15 +11,3 @@ excluded_files:
 excluded_dirs:
 - beckyk
 - csformat
-- DAILYKB
-- FDC
-- FULLKB
-- Homenet
-- Jeffreyf
-- KB
-- KBSPV
-- Markesh
-- Peach
-- Store
-- STORE1
-- test
