@@ -8,21 +8,14 @@ print(config)
 
 # root directory for local host
 root_ldir = config['root_ldir']
-print(root_ldir)
 
 # root directory for ftp host
 root_fdir = config['root_fdir']
-print(root_fdir)
 
 # directories to exclude
 excluded_dirs = config['excluded_dirs']
-print(excluded_dirs)
-
 excluded_files = config['excluded_files']
-print(excluded_files)
-
-excluded_filetypes = ['\.zip', '\.tar', '\.tar\.gz', '\.gz', '\.rar', '\.7z']
-print(excluded_filetypes)
+excluded_filetypes = ['\.zip', '\.tar', '\.tar\.gz', '\.gz', '\.rar', '\.7z', '\.exe']
 
 # ftp server credentials
 ftp_host = config['ftp_host']
@@ -33,10 +26,8 @@ print(ftp_host, ftp_user, ftp_pass)
 
 # connect to the FTP server
 ftp = ftputil.FTPHost(ftp_host, ftp_user, ftp_pass)
-print(ftp)
 # gather the remote file structure
 recursive = ftp.walk(root_fdir, topdown=True, onerror=None)
-print(recursive)
 
 def exclude_this_directory(target):
     global excluded_dirs
