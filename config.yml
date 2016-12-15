@@ -1,13 +1,16 @@
-root_ldir: /
-root_fdir: MISC
+root_ldir: '/tmp'
+root_fdir: '/'
 
-ftp_host: ftp.adobe.com
+ftp_host: ftp.rma.usda.gov
 ftp_user: anonymous
-ftp_pass: 'nobody@knows.com'
+ftp_pass: 'jacksparrow@gmail.com'
 
 excluded_files:
 - mysql.tar.gz
 
 excluded_dirs:
-- beckyk
-- csformat
+- MAPS
+- Applications
+- Policies
+- References
+- pub
