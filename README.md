@@ -1,4 +1,4 @@
 webackup
 ========
 
-python code to back up a web server
+python 2.7 code to back up a web server
